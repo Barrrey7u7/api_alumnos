@@ -19,21 +19,22 @@ class Alumno(db.Model):
     semestre = db.Column(db.Integer, nullable=True)
 
 # Endpoint para obtener todos los alumnos
-@app.route('/alumnos', methods=['GET'])
-def obtener_alumnos():
-    alumnos = Alumno.query.all()
-    lista_alumnos = []
-    for alumno in alumnos:
-        lista_alumnos.append({
-            'no_control': alumno.no_control,
-            'nombre': alumno.nombre,
-            'ap_paterno': alumno.ap_paterno,
-            'ap_materno': alumno.ap_materno,
-            'semestre': alumno.semestre
-        })
-    return jsonify(lista_alumnos)
+
 
 # Endpoint para agregar un nuevo alumno
+@app.route('/alumnos', methods=['POST'])
+def agregar_alumno():
+    data = request.get_json()
+    nuevo_alumno = Alumno(
+        no_control=data['no_control'],
+        nombre=data['nombre'],
+        ap_paterno=data['ap_paterno'],
+        ap_materno=data['ap_materno'],
+        semestre=data['semestre']
+    )
+    db.session.add(nuevo_alumno)
+    db.session.commit()
+    return jsonify({'mensaje': 'Alumno agregado exitosamente'}), 201
 
 
 # Endpoint para obtener un alumno por no_control
