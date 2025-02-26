@@ -19,27 +19,39 @@ class Alumno(db.Model):
     semestre = db.Column(db.Integer, nullable=True)
 
 # Endpoint para obtener todos los alumnos
-@app.route('/alumnos', methods=['GET'])
-def obtener_alumnos():
-    alumnos = Alumno.query.all()
-    lista_alumnos = []
-    for alumno in alumnos:
-        lista_alumnos.append({
-            'no_control': alumno.no_control,
-            'nombre': alumno.nombre,
-            'ap_paterno': alumno.ap_paterno,
-            'ap_materno': alumno.ap_materno,
-            'semestre': alumno.semestre
-        })
-    return jsonify(lista_alumnos)
+
 
 # Endpoint para agregar un nuevo alumno
 
 
 # Endpoint para obtener un alumno por no_control
+@app.route('/alumnos/<no_control>', methods=['GET'])
+def obtener_alumno(no_control):
+    alumno = Alumno.query.get(no_control)
+    if alumno is None:
+        return jsonify({'mensaje': 'Alumno no encontrado'}), 404
+    return jsonify({
+        'no_control': alumno.no_control,
+        'nombre': alumno.nombre,
+        'ap_paterno': alumno.ap_paterno,
+        'ap_materno': alumno.ap_materno,
+        'semestre': alumno.semestre
+    })
 
 
 # Endpoint para actualizar un alumno
+@app.route('/alumnos/<no_control>', methods=['PUT'])
+def actualizar_alumno(no_control):
+    alumno = Alumno.query.get(no_control)
+    if alumno is None:
+        return jsonify({'mensaje': 'Alumno no encontrado'}), 404
+    data = request.get_json()
+    alumno.nombre = data['nombre']
+    alumno.ap_paterno = data['ap_paterno']
+    alumno.ap_materno = data['ap_materno']
+    alumno.semestre = data['semestre']
+    db.session.commit()
+    return jsonify({'mensaje': 'Alumno actualizado exitosamente'})
 
 
 # Endpoint para eliminar un alumno
