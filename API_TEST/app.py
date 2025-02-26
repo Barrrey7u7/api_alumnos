@@ -40,22 +40,18 @@ def obtener_alumno(no_control):
 
 
 # Endpoint para actualizar un alumno
-@app.route('/alumnos/<no_control>', methods=['PUT'])
-def actualizar_alumno(no_control):
-    alumno = Alumno.query.get(no_control)
-    if alumno is None:
-        return jsonify({'mensaje': 'Alumno no encontrado'}), 404
-    data = request.get_json()
-    alumno.nombre = data['nombre']
-    alumno.ap_paterno = data['ap_paterno']
-    alumno.ap_materno = data['ap_materno']
-    alumno.semestre = data['semestre']
-    db.session.commit()
-    return jsonify({'mensaje': 'Alumno actualizado exitosamente'})
+
 
 
 # Endpoint para eliminar un alumno
-
+@app.route('/alumnos/<no_control>', methods=['DELETE'])
+def eliminar_alumno(no_control):
+    alumno = Alumno.query.get(no_control)
+    if alumno is None:
+        return jsonify({'mensaje': 'Alumno no encontrado'}), 404
+    db.session.delete(alumno)
+    db.session.commit()
+    return jsonify({'mensaje': 'Alumno eliminado exitosamente'})
 
 if __name__ == '__main__':
     app.run(debug=True)
