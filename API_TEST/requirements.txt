@@ -3,4 +3,3 @@ Flask-SQLAlchemy
 gunicorn
 psycopg2
 python-dotenv
-gunicorn==20.x.x
